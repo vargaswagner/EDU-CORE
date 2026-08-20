@@ -1,34 +1,35 @@
-import express from "express";
+import express from 'express';
 
-import { appConfig, serverConfig } from "./config/index.js";
+import { appConfig, serverConfig } from './config/index.js';
 
-import { requestIdMiddleware } from "./shared/infrastructure/http/middlewares/request-id.middleware.js";
+import {
+  requestIdMiddleware,
+  configureSecurity,
+  requestLoggerInterceptor,
+  errorMiddleware,
+  notFoundMiddleware,
+} from './shared/infrastructure/http/index.js';
 
-import { loggerMiddleware } from "./shared/infrastructure/http/middlewares/logger.middleware.js";
-
-import { configureSecurity } from "./shared/infrastructure/http/middlewares/security.middleware.js";
-
-import { notFoundMiddleware } from "./shared/infrastructure/http/middlewares/not-found.middleware.js";
-
-import { errorMiddleware } from "./shared/infrastructure/http/middlewares/error.middleware.js";
-
-import { routes } from "./routes/index.js";
+import { routes } from './routes/index.js';
 
 export const app = express();
 
-app.set("trust proxy", serverConfig.trustProxy);
-
-app.use(requestIdMiddleware);
-
-app.use(loggerMiddleware);
+app.set('trust proxy', serverConfig.trustProxy);
+// ==========================================
+// GLOBAL MIDDLEWARES
+// ==========================================
 
 configureSecurity(app);
+
+app.use(requestIdMiddleware);
 
 app.use(
   express.json({
     limit: serverConfig.bodyLimit,
   }),
 );
+
+app.use(requestLoggerInterceptor);
 
 app.use(
   express.urlencoded({
@@ -37,7 +38,10 @@ app.use(
   }),
 );
 
-app.get("/", (req, res) => {
+// ==========================================
+// ROUTES
+// ==========================================
+app.get('/', (req, res) => {
   res.json({
     success: true,
 
@@ -51,8 +55,15 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use(`${appConfig.api.prefix}/${appConfig.api.version}`, routes);
+// ==========================================
+// 404
+// ==========================================
 
 app.use(notFoundMiddleware);
 
+app.use(`${appConfig.api.prefix}/${appConfig.api.version}`, routes);
+
+// ==========================================
+// GLOBAL ERROR HANDLER
+// ==========================================
 app.use(errorMiddleware);

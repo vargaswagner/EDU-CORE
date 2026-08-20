@@ -1,19 +1,42 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+// .sequelizerc
 
-const __filename = fileURLToPath(import.meta.url);
+const path = require('node:path');
 
-const __dirname = path.dirname(__filename);
+module.exports = {
+  config: path.resolve(
+    'src',
+    'shared',
+    'infrastructure',
+    'database',
+    'sequelize',
+    'config',
+    'sequelize-cli.cjs',
+  ),
 
-export default {
-  config: path.resolve(__dirname, "database/config/config.js"),
+  'migrations-path': path.resolve(
+    'src',
+    'shared',
+    'infrastructure',
+    'database',
+    'sequelize',
+    'migrations',
+  ),
 
-  "migrations-path": path.resolve(__dirname, "database/migrations"),
+  'seeders-path': path.resolve(
+    'src',
+    'shared',
+    'infrastructure',
+    'database',
+    'sequelize',
+    'seeders',
+  ),
 
-  "seeders-path": path.resolve(__dirname, "database/seeders"),
-
-  "models-path": path.resolve(
-    __dirname,
-    "src/shared/infrastructure/database/sequelize/models",
+  'models-path': path.resolve(
+    'src',
+    'shared',
+    'infrastructure',
+    'database',
+    'sequelize',
+    'models',
   ),
 };
