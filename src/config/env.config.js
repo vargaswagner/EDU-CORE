@@ -1,30 +1,30 @@
-import "dotenv/config";
-import { z } from "zod";
+import 'dotenv/config';
+import { z } from 'zod';
 
 const envSchema = z.object({
   NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
+    .enum(['development', 'test', 'production'])
+    .default('development'),
 
-  APP_NAME: z.string().min(1).default("instituto-backend"),
+  APP_NAME: z.string().min(1).default('instituto-backend'),
 
-  APP_VERSION: z.string().min(1).default("1.0.0"),
+  APP_VERSION: z.string().min(1).default('1.0.0'),
 
-  APP_HOST: z.string().default("0.0.0.0"),
+  APP_HOST: z.string().default('0.0.0.0'),
 
   APP_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
 
-  API_PREFIX: z.string().default("/api"),
+  API_PREFIX: z.string().default('/api'),
 
-  API_VERSION: z.string().default("v1"),
+  API_VERSION: z.string().default('v1'),
 
-  CORS_ORIGIN: z.string().default("http://localhost:3000"),
+  CORS_ORIGIN: z.string().default('http://localhost:3000'),
 
-  BODY_LIMIT: z.string().default("2mb"),
+  BODY_LIMIT: z.string().default('2mb'),
 
   LOG_LEVEL: z
-    .enum(["fatal", "error", "warn", "info", "debug", "trace"])
-    .default("info"),
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
+    .default('info'),
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
 
@@ -32,14 +32,30 @@ const envSchema = z.object({
 
   TRUST_PROXY: z
     .string()
-    .transform((value) => value === "true")
-    .default("false"),
+    .transform((value) => value === 'true')
+    .default('false'),
+
+  // ==========================================
+  // AUTH / JWT
+  // ==========================================
+
+  JWT_ACCESS_SECRET: z.string().min(32),
+
+  JWT_REFRESH_SECRET: z.string().min(32),
+
+  JWT_ISSUER: z.string().min(1).default('instituto-backend'),
+
+  JWT_AUDIENCE: z.string().min(1).default('instituto-client'),
+
+  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
+
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
   // DATABASE
 
-  DB_DIALECT: z.enum(["postgres"]).default("postgres"),
+  DB_DIALECT: z.enum(['postgres']).default('postgres'),
 
-  DB_HOST: z.string().default("localhost"),
+  DB_HOST: z.string().default('localhost'),
 
   DB_PORT: z.coerce.number().int().positive().default(5432),
 
@@ -57,14 +73,14 @@ const envSchema = z.object({
 
   DB_LOGGING: z
     .string()
-    .transform((value) => value === "true")
-    .default("false"),
+    .transform((value) => value === 'true')
+    .default('false'),
 });
 
 const result = envSchema.safeParse(process.env);
 
 if (!result.success) {
-  console.error("Invalid environment variables");
+  console.error('Invalid environment variables');
 
   console.error(result.error.flatten().fieldErrors);
 

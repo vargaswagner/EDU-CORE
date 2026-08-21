@@ -35,8 +35,10 @@ import { Rol } from './identity/Rol.model.js';
 import { Permiso } from './identity/Permiso.model.js';
 import { UsuarioRol } from './identity/UsuarioRol.model.js';
 import { RolPermiso } from './identity/RolPermiso.model.js';
+import { Sesion } from './identity/Sesion.model.js';
 
 const models = {
+  Sesion,
   Persona,
   Carrera,
   PlanEstudios,

@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 import { appConfig, serverConfig } from './config/index.js';
 
@@ -29,6 +30,8 @@ app.use(
   }),
 );
 
+app.use(cookieParser());
+
 app.use(requestLoggerInterceptor);
 
 app.use(
@@ -55,14 +58,12 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use(`${appConfig.api.prefix}/${appConfig.api.version}`, routes);
+
 // ==========================================
 // 404
 // ==========================================
-
 app.use(notFoundMiddleware);
-
-app.use(`${appConfig.api.prefix}/${appConfig.api.version}`, routes);
-
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================

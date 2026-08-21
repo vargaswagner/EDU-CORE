@@ -31,13 +31,19 @@ export class TokenService {
     this.refreshExpiresIn = refreshExpiresIn;
   }
 
-  async generateAccessToken({ userId, roles = [], permissions = [] }) {
+  async generateAccessToken({
+    userId,
+    sessionId,
+    roles = [],
+    permissions = [],
+  }) {
     return this.#generateToken({
       key: this.accessKey,
       subject: userId,
       expiresIn: this.accessExpiresIn,
       payload: {
         type: 'access',
+        sessionId,
         roles,
         permissions,
       },

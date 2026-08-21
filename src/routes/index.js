@@ -1,7 +1,25 @@
-import { Router } from "express";
+// src/routes/index.js
 
-import { healthRoutes } from "../health/health.routes.js";
+import { Router } from 'express';
 
-export const routes = Router();
+import { createAuthRoutes } from '../modules/auth/infrastructure/routes/auth.routes.js';
 
-routes.use("/health", healthRoutes);
+import {
+  authController,
+  authenticationMiddleware,
+} from '../container/index.js';
+
+const router = Router();
+
+// ==========================================
+// AUTH
+// ==========================================
+
+const authRoutes = createAuthRoutes({
+  authController,
+  authenticationMiddleware,
+});
+
+router.use('/auth', authRoutes);
+
+export const routes = router;

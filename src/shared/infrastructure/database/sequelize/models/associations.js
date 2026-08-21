@@ -33,6 +33,7 @@ export function setupAssociations(models) {
     SesionCaja,
     MovimientoCaja,
 
+    Sesion,
     Usuario,
     Rol,
     Permiso,
@@ -74,6 +75,21 @@ export function setupAssociations(models) {
   Usuario.belongsTo(Persona, {
     foreignKey: 'persona_id',
     as: 'persona',
+  });
+
+  Usuario.hasMany(Sesion, {
+    foreignKey: 'usuario_id',
+    sourceKey: 'id',
+    as: 'sesiones',
+
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  });
+
+  Sesion.belongsTo(Usuario, {
+    foreignKey: 'usuario_id',
+    targetKey: 'id',
+    as: 'usuario',
   });
 
   /*

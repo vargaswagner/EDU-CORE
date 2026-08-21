@@ -1,25 +1,27 @@
-import { errorResponse } from "../responses/api-response.js";
-
 export function errorMiddleware(error, req, res, next) {
-  const statusCode = error.statusCode || 500;
+  req.log?.error(
+    {
+      err: error,
+      requestId: req.id,
+      method: req.method,
+      url: req.originalUrl,
+    },
+    'Unhandled application error',
+  );
 
-  const code = error.code || "INTERNAL_ERROR";
+  console.error('========== INTERNAL ERROR ==========');
+  console.error('requestId:', req.id);
+  console.error('name:', error?.name);
+  console.error('message:', error?.message);
+  console.error('stack:', error?.stack);
+  console.error('====================================');
 
-  const message = error.isOperational ? error.message : "Internal server error";
-
-  const details = error.isOperational ? error.details : null;
-
-  return errorResponse({
-    res,
-
-    statusCode,
-
-    code,
-
-    message,
-
-    details,
-
-    requestId: req.requestId,
+  return res.status(500).json({
+    success: false,
+    error: {
+      code: 'INTERNAL_ERROR',
+      message: 'Internal server error',
+    },
+    requestId: req.id,
   });
 }
